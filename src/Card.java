@@ -17,7 +17,6 @@ public Card(int suite, int value){
     this.value=value;
 }
 
-
 public void setSuite(int suite) {
     this.suite = suite;
 }
