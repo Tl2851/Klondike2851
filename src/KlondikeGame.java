@@ -48,6 +48,7 @@ public class KlondikeGame {
 				panel.repaint();
 			}
 		});
+    Card.loadCards();
 	}
 
 	protected void clickedAt(MouseEvent me) {
