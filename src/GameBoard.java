@@ -21,8 +21,8 @@ public class GameBoard implements Drawable, Updateable {
 	
 	public GameBoard() {
 		try {
-			testImage = ImageIO.read(new File("images/cards/dj.png"));
-			backImage = ImageIO.read(new File("images/cards/b1fv.png"));
+			testImage = ImageIO.read(new File("../images/cards/dj.png"));
+			backImage = ImageIO.read(new File("../images/cards/b1fv.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

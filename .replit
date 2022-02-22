@@ -1,0 +1,2 @@
+language = "java10"
+run = "clear && javac -d bin ./src/*.java && cd bin && java KlondikeGame"

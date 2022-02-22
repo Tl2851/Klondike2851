@@ -7,6 +7,11 @@
  * You WILL write subclasses of Pile
  */
 public abstract class Pile implements Drawable, Updateable {
-    
-    public abstract boolean canAddCard(Card c);
+
+  public abstract boolean canAddCard(Card c);
+
+	
+
+	public ArrayList <Card>  Pile = new ArrayList <>();
+	
 }
