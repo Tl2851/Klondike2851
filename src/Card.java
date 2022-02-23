@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.*;
 
 /** represents a playing card that can draw itself. */
 public class Card implements Drawable, Updateable{    
@@ -34,6 +35,7 @@ public static void loadCards(){
       }
     }
   }
+	Collections.shuffle(cards);
 }
 
 public Card(int suit, int value){
