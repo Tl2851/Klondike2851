@@ -1,82 +1,164 @@
+
+/** represents a playing card that can draw itself. */
+import java.awt.*;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-
-import javax.tools.DocumentationTool.Location;
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.*;
 
-/** represents a playing card that can draw itself. */
-public class Card implements Drawable, Updateable{    
+import javax.imageio.ImageIO;
 
-private int suit;
-private int value;
-private boolean faceup;
-private int x,y;
-private Image image;
 
-private static Image[][] cards = new Image[4][13];
-  
-public static void loadCards(){
-  String[] ss = new String[] {"s", "h", "d", "c"};
-  String[] vs = new String[] {"1","2","3","4","5","6","7","8","9","10","j","q","k"};
-  for (int s=0; s<4; s++){
-    for(int v=0; v<13; v++){
-      try{
-        cards[s][v] = ImageIO.read(new File("images/cards/" + ss[s] + vs[v] + ".png"));
-      }
-      catch(IOException e){
-        e.printStackTrace();
-      }
+public class Card implements Drawable, Updateable{
+
+    private String value;
+    private String suit;
+    private boolean isRed;
+    private int column;
+    private int cardNumber;
+    private boolean faceDown;
+    private Image frontImage;
+    private Image backImage;
+    private boolean inDeck;
+    private boolean inColumn;
+    private boolean inFoundation;
+    public final int xShift = 150, yShift = 200;
+    public final int xMargin = 75, yMargin = 50;
+
+    private int x, y;
+
+    public Card(String v, String s) {
+        value = v;
+        suit = s;
+        isRed = (s.equals("d") || s.equals("h"));
+        try {
+            frontImage = ImageIO.read(new File("images/cards/" + suit + value + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            backImage = ImageIO.read(new File("images/cards/b1fv.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        faceDown = true;
+        inDeck = true;
+        inColumn = false;
+        inFoundation = false;
     }
-  }
-	Collections.shuffle(cards);
-}
 
-public Card(int suit, int value){
-    this.suit=suit;
-    this.value=value;
-}
+    public void draw(Graphics g) {		
+        Image img = (faceDown)? (backImage):(frontImage);
+        if (inColumn) {
+            x = xShift + xMargin * column;
+            y = yShift +  yMargin * cardNumber;
+            g.drawImage(img, x, y, null);
+        } else if (inDeck) {
+            x = 50;
+            y = 250;
+            g.drawImage(img, 50, 250, null);
+        } else {
+            int foundationNumber = (suit.equals("s"))? 1: (suit.equals("c"))? 2: (suit.equals("h"))? 3:  4;
+            x = 200 + 75 * foundationNumber;
+            y = 100;
+            g.drawImage(img, x, 100, null);
+        }
+    }
 
-public void setSuit(int suit) {
-    this.suit = suit;
-}
-public void setValue(int value) {
-    this.value = value;
-}
+    public void update(ActionEvent e) {
 
-public int getSuit() {
-    return suit;
-}
-public int getValue() {
-    return value;
-}
+    }
 
+    public int getCardNumber() {
+        return this.cardNumber;
+    }
 
-@Override
-public void update(ActionEvent a) {
-    // TODO Auto-generated method stub
+    public int getColumn() {
+        return this.column;
+    }
+
+    public void setCardNumber(int cN) {
+        this.cardNumber = cN;
+    }
+
+    public void setColumn(int c) {
+        this.column = c;
+    }
+
+    public int compareTo(Card other) {
+        try {
+            return Integer.parseInt(value) - Integer.parseInt(other.value);
+        } catch (Exception e) {
+            
+        }
+        int val = (this.value.equals("j"))? (11): (this.value.equals("q"))? (12) : (13);
+        int val2 = (other.value.equals("j"))? (11): (other.value.equals("q"))? (12) : (13);
+        return val - val2;
+    }
+
+    public void flip() {
+        this.faceDown = (faceDown)? false: true;
+    }
+
+    public boolean oppositeColor(Card c) {
+        return (this.isRed && !c.isRed) || (!this.isRed && c.isRed);
+    }
+
+    public String toString() {
+        return this.value + " of " + this.suit;
+    }
+
+    public boolean isFaceDown() {
+        return this.faceDown;
+    }
+
+    public String getSuit() {
+        return this.suit;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setInDeck(boolean inDeck) {
+        this.inDeck = inDeck;
+    }
+
+    public void setInColumn(boolean inColumn) {
+        this.inColumn = inColumn;
+    }
+
+    public void setInFoundation(boolean inFoundation) {
+        this.inFoundation = inFoundation;
+    }
+
+    public void clickedOn(MouseEvent me) {
+
+        String ans = x + ", " + y;
+        Image temp = (faceDown)? backImage: frontImage;
+        // if (inColumn) {
+        //     if ((x < me.getX() && me.getX() < x + temp.getWidth(null)) && 
+        //     (y < me.getY() && me.getY() < y + temp.getHeight(null))) {
+        //         System.out.println(ans);
+        //     }
+        // } else if (inDeck && (x < me.getX() && me.getX() < x + temp.getWidth(null)) && 
+        // (y < me.getY() && me.getY() < y + temp.getHeight(null))) {
+        //     System.out.println(ans);;
+        // } else if (inFoundation) {
+        //     if ((x < me.getX() && me.getX() < x + temp.getWidth(null)) && 
+        //     (y < me.getY() && me.getY() < y + temp.getHeight(null))) {
+        //         System.out.println(ans);;
+        //     }
+        // }
+        // System.out.println(x + ", " + me.getX());
+        // System.out.println(y + ", " + me.getY());
+        if ((x < me.getX() && me.getX() < x + temp.getWidth(null)) && 
+            (y < me.getY() && me.getY() < y + temp.getHeight(null)) && !this.faceDown) {
+                System.out.println(ans);;
+            }
+    }
+
     
-}
-
-@Override
-public void draw(Graphics g) {
-    // TODO Auto-generated method stub
-  if(faceup){
-    g.drawImage(cards[suit][value],x,y,null);
-  }
-  else{
-    try{
-      g.drawImage(ImageIO.read(new File("images/cards/b1fv.png")),x,y,null);
-    }
-    catch(IOException e){
-      e.printStackTrace();
-    }
-  }
-}
 }
